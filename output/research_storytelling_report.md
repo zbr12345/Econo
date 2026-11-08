@@ -6,7 +6,7 @@
 
 ---
 
-## 1. Introduction & The Core Research Question
+## 1. Introduction
 
 Does allocating a larger share of a government's fiscal budget to healthcare increase population longevity? In global public policy discussions, an intuitive positive association is often presumed: nations with higher public health spending shares enjoy longer life expectancies. However, from an econometric perspective, observing that high-spending nations live longer does not establish that public budgetary reallocations causally generate those longevity gains. Cross-national comparisons are profoundly vulnerable to omitted-variable bias, reverse causality, and unobserved institutional heterogeneity.
 
@@ -14,11 +14,11 @@ This study develops an incremental empirical investigation across 181 nations fr
 
 ---
 
-## 2. Data Pre-Processing & The Definition of Health Expenditure
+## 2. Data Pre-Processing 
 
 ### 2.1 Documenting the Primary Explanatory Variable
 
-The core explanatory variable, `Total expenditure`, is defined strictly following the official World Bank and WHO standard indicator (`SH.XPD.GHED.GE.ZS`):
+The core explanatory variable, `Total expenditure`, is defined strictly following the official World Bank:
 
 $$
 \text{Total expenditure} \equiv \text{Domestic general government expenditure on health as a percentage of general government expenditure}
@@ -34,22 +34,9 @@ The original Kaggle compilation suffered from crowdsourced discrepancies, unreco
 2. World Bank constant USD GDP per capita series (`gdp_per_capita.csv`).
 3. World Bank health expenditure shares (`API_SH.XPD.GHED.GE.ZS`).
 
-Country identifiers were harmonized across 28 nation pairs (e.g., *Bolivia*, *Cote d'Ivoire*, *Tanzania*), non-positive GDP records removed, and developmental classifications corrected (specifically France and Canada, mislabeled as 'Developing' in the raw file, reclassified to 'Developed'). The resulting clean panel contains **2,702 balanced country-year records across 181 countries spanning 2000–2015**, verified through SHA256 cryptographic hashes.
+Country identifiers were harmonized across 28 nation pairs (e.g., *Bolivia*, *Cote d'Ivoire*, *Tanzania*), non-positive GDP records removed, and developmental classifications corrected (specifically France and Canada, mislabeled as 'Developing' in the raw file, reclassified to 'Developed'). The resulting clean panel contains **2,702 balanced country-year records across 181 countries spanning 2000–2015.**
 
-### 2.3 Summary Statistics of the Clean Panel
-
-| Indicator                   | Description                         | Mean    | Std. Dev. | Median | Min    | Max      | N     |
-| --------------------------- | ----------------------------------- | ------- | --------- | ------ | ------ | -------- | ----- |
-| **Life expectancy**   | Life expectancy at birth (years)    | 69.19   | 8.97      | 71.27  | 42.12  | 83.79    | 2,702 |
-| **Total expenditure** | Govt health spending (% of budget)  | 9.43%   | 4.62%     | 8.76%  | 1.11%  | 37.62%   | 2,702 |
-| **GDP per capita**    | Constant USD                        | $10,782 | $16,837   | $3,735 | $111.9 | $123,514 | 2,702 |
-| **log(GDPpc)**        | Natural logarithm of GDP per capita | 8.23    | 1.53      | 8.23   | 4.72   | 11.72    | 2,702 |
-| **Schooling**         | Average education (years)           | 12.10   | 3.22      | 12.40  | 0.00   | 20.70    | 2,702 |
-| **Alcohol**           | Per capita pure alcohol (litres/yr) | 4.53 L  | 4.02 L    | 3.67 L | 0.01 L | 17.87 L  | 2,537 |
-
----
-
-## 3. Alignment of Motivating Evidence & Correlation Structure
+## 3. Motivating Evidence & Correlation Structure
 
 ### 3.1 Aligning Visualizations to Budget Share
 
@@ -70,7 +57,7 @@ Bivariate Pearson correlations highlight the underlying web of macroeconomic co-
 
 ---
 
-## 4. Pedagogical Benchmark: Simpson's Paradox & The Confounding Role of National Wealth
+## 4. Simpson's Paradox & The Confounding Role of National Wealth
 
 To provide a vivid, intuitive demonstration of how omitted national wealth can distort empirical findings, we examined national alcohol consumption (`Alcohol`, pure litres per capita per year). In naive cross-country pooled data, drinking alcohol exhibits a strong, statistically significant positive association with longevity: each additional litre of alcohol appears associated with living 0.87 years longer ($\beta = +0.8651$, $r = +0.3851$, $p < 0.0001$).
 
@@ -85,23 +72,15 @@ Once developing countries were stratified into homogeneous **GDP per capita terc
 - **Tercile 3 (Richest developing: \$4,359–\$85,076)**: $\beta = \mathbf{-0.2277}$ ($r = -0.16$, $p < 0.0001$)
 - **Two-Way Fixed Effects Panel Model**: $\beta_{\text{TWFE}} = \mathbf{-0.1458}$ ($p = 0.0040$)
 
-This pedagogical exercise establishes the central econometric warning of our investigation: national income is a master confounder capable of masking deleterious health factors as positive, and it will distort public spending estimates unless properly addressed.
+This establishes the central econometric warning of our investigation: national income is a master confounder capable of masking deleterious health factors as positive, and it will distort public spending estimates unless properly addressed.
 
 ---
 
 ## 5. Progressive Econometric Modeling & Control Selection
 
-A foundational decision in our empirical design was deliberately excluding `Adult Mortality` and `BMI` from baseline specifications. **Adult Mortality** is an endogenous mediator: population life expectancy is mathematically calculated from age-specific mortality tables. Controlling for adult mortality controls away the direct biological mechanism through which healthcare spending improves survival, inducing severe over-controlling bias. Similarly, **BMI** represents a health outcome influenced by public healthcare spending, nutrition standards, and preventive care. In contrast, **log(GDPpc)** (national income) and **Schooling** (human capital) represent pre-determined exogenous confounders that capture general development without lying on the causal chain between health spending and longevity.
+A foundational decision in our empirical design was deliberately excluding `Adult Mortality`. **Adult Mortality** is an endogenous mediator: population life expectancy is mathematically calculated from age-specific mortality tables. Controlling for adult mortality controls away the direct biological mechanism through which healthcare spending improves survival, inducing severe over-controlling bias. 
 
-The incremental model progression begins with Model 1, estimating a naive pooled bivariate regression:
-
-$$
-\text{LifeExpectancy}_{it} = \beta_0 + \beta_1 \text{TotalExpenditure}_{it} + u_{it}
-$$
-
-Here, the estimated coefficient is $\beta_1 = +0.8369$ ($p < 0.001$), creating the initial impression that each additional percentage point allocated to health adds 0.84 years of life.
-
-However, in **Model 2**, once exogenous controls for log(GDP per capita) and Schooling are introduced:
+This is the model that we use to observe the relation between the life expectancy and total expenditure:
 
 $$
 \text{LifeExpectancy}_{it} = \beta_0 + \beta_1 \text{TotalExpenditure}_{it} + \beta_2 \log(\text{GDP}_{it}) + \beta_3 \text{Schooling}_{it} + u_{it}
@@ -130,17 +109,17 @@ Here, unobserved time-invariant national characteristics (geography, institution
 
 To rigorously examine whether the null finding of Model 3 was masking underlying non-linearities, we tested for diminishing marginal returns. A standard economic conjecture posits that public health spending yields substantial returns at low levels of expenditure, but flattens out as systems mature.
 
-To test diminishing returns, we estimated a piecewise linear model fixing a threshold at the sample median spending, 8.76 percent of government budget, and allowed the slope to change above it. If returns were diminishing, the estimated curve would flatten after the threshold. It does not. The estimated slope change is small and negative, minus 0.075 years per percentage point, but far from statistically significant, with a country-clustered p-value of 0.76. A simple straight line fits the data just as well, and it is preferred by standard information criteria (AIC and BIC). Consequently, we find no empirical evidence of diminishing marginal returns.
+To test diminishing returns, we estimated a piecewise linear model fixing a threshold at the sample median spending, 8.76 percent of government budget, and allowed the slope to change above it. If returns were diminishing, the estimated curve would flatten after the threshold. It does not. The estimated slope change is small and negative, minus 0.075 years per percentage point, but far from statistically significant, with a country-clustered p-value of 0.76. Consequently, we find no empirical evidence of diminishing marginal returns.
 
 We next investigated whether the lack of contemporaneous effect was due to temporal delay: public health investments (such as constructing clinics, training medical professionals, or launching immunization drives) may take multiple years to manifest in national mortality tables. To test whether health spending takes years to work, we compared spending in the same year ($L=0$), one year earlier ($L=1$), and three years earlier ($L=3$) on a common, balanced sample of 2,189 observations across 171 countries.
 
 The estimated effect does not grow with the lag. In fact, it slightly decreases (from 0.2456 at $L=0$ down to 0.1860 at $L=3$ for the base slope), and the confidence intervals for the slope change always include zero. There is no empirical sign of a delayed effect.
 
-| Lag Horizon                         | Slope Below Knot (8.76%) | Slope Change Above Knot | p-value (Cluster SE) |  Net Slope Above Knot  |    AIC / BIC    |
-| ----------------------------------- | :----------------------: | :---------------------: | :------------------: | :---------------------: | :-------------: |
-| **Contemporaneous ($L=0$)** |         +0.2456         |        −0.0767        |        0.7456        | +0.1689 ($p = 0.074$) | 13,100 / 13,135 |
-| **1-Year Lag ($L=1$)**      |         +0.2321         |        −0.0749        |        0.7562        | +0.1572 ($p = 0.115$) | 13,107 / 13,141 |
-| **3-Year Lag ($L=3$)**      |         +0.1860         |        −0.0386        |        0.8783        | +0.1474 ($p = 0.174$) | 13,118 / 13,152 |
+| Lag Horizon                         | Slope Below Knot (8.76%) | Slope Change Above Knot | p-value (Cluster SE) |  Net Slope Above Knot  |
+| ----------------------------------- | :----------------------: | :---------------------: | :------------------: | :---------------------: |
+| **Contemporaneous ($L=0$)** |         +0.2456         |        −0.0767        |        0.7456        | +0.1689 ($p = 0.074$) |
+| **1-Year Lag ($L=1$)**      |         +0.2321         |        −0.0749        |        0.7562        | +0.1572 ($p = 0.115$) |
+| **3-Year Lag ($L=3$)**      |         +0.1860         |        −0.0386        |        0.8783        | +0.1474 ($p = 0.174$) |
 
 ---
 
@@ -162,7 +141,12 @@ To conclude: our empirical tests find **no diminishing returns, no delayed multi
 
 A comprehensive theoretical discussion must address cross-country medical technology spillovers (such as vaccines, antivirals, and modern pharmaceuticals developed in advanced economies benefiting poorer nations). Advanced nations finance the massive fixed capital and scientific R&D costs required to invent medical technologies. Once discovered, these innovations diffuse globally at very low marginal cost, often distributed through international consortia (such as the WHO, Gavi, and the Global Fund).
 
-As a result, developing nations achieve dramatic improvements in population longevity (e.g., eradicating polio, controlling measles, deploying antiretrovirals) without needing to expand their domestic health budget shares. This mechanism explains why cross-group slope comparisons (such as Developed vs. Developing in Model 5) are difficult to interpret cleanly: the observed return to domestic healthcare spending in developing nations is confounded and compressed by external global technology spillovers.
+As a result, developing nations achieve dramatic improvements in population longevity (e.g., eradicating polio, controlling measles, deploying antiretrovirals) without needing to expand their domestic health budget shares. This mechanism explains why cross-group slope comparisons are difficult to interpret cleanly: the observed return to domestic healthcare spending in developing nations is confounded and compressed by external global technology spillovers.
+
+Some possible explanations are:
+
+- Developed countries already have strong health infrastructure and are close to the medical frontier. Extra spending therefore tends to produce small and slow gains in life expectancy. Furthermore, our dataset covers only a 15-year period, which is relatively short for capturing the long-term effects of healthcare spending on life expectancy and may therefore limit our ability to identify its full impact.
+- Developing countries have much more room to improve, and progress can be fast. But they often lack the funds to invest. In many cases, wealthier countries and international donors provide part of the money, so life expectancy can improve even without a large increase in the government’s own health budget. Our model does not capture this: it only measures domestic government spending as a share of the budget, not foreign aid.
 
 ---
 
