@@ -1,0 +1,5 @@
+feature,n,pearson_r,pearson_p,spearman_rho,spearman_p
+Schooling,2702,0.769550,0.000000,0.826908,0.000000
+ln(GDP per capita),2702,0.796679,0.000000,0.846436,0.000000
+Total expenditure on health,2702,0.497391,0.000000,0.587946,0.000000
+Adult mortality,2702,-0.683548,0.000000,-0.646277,0.000000

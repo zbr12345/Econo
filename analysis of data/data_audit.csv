@@ -1,0 +1,23 @@
+column,dtype_as_loaded,missing_count,missing_percent
+Country,str,0,0.0
+Year,int64,0,0.0
+Status,str,0,0.0
+Life expectancy,float64,0,0.0
+Adult Mortality,float64,0,0.0
+infant deaths,int64,0,0.0
+Alcohol,float64,165,6.10658771280533
+percentage expenditure,float64,0,0.0
+Hepatitis B,float64,484,17.912657290895634
+Measles,int64,0,0.0
+BMI,float64,16,0.5921539600296076
+under-five deaths,int64,0,0.0
+Polio,float64,0,0.0
+Total expenditure,float64,0,0.0
+Diphtheria,float64,0,0.0
+HIV/AIDS,float64,0,0.0
+GDP,float64,0,0.0
+Population,float64,464,17.172464840858623
+thinness  1-19 years,float64,16,0.5921539600296076
+thinness 5-9 years,float64,16,0.5921539600296076
+Income composition of resources,float64,0,0.0
+Schooling,float64,0,0.0
