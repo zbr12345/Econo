@@ -80,56 +80,88 @@ This establishes the central econometric warning of our investigation: national 
 
 ### 5.1 Baseline Model Specification & Control Selection
 
-The modeling sequence begins by establishing a contemporaneous baseline model across 2,702 country-year observations (171 countries) to assess the relationship between general government health expenditure share and national life expectancy.
+The analysis starts with contemporaneous pooled OLS using the same 2,702 country-year observations from 171 countries. X is domestic government health expenditure as a percentage of total government expenditure. A one-unit increase means one percentage point. GDPpc denotes GDP per capita.
 
-A foundational methodological decision in this empirical design is the deliberate exclusion of `Adult Mortality`. **Adult Mortality** represents an endogenous mediator rather than an exogenous confounder: population life expectancy is mathematically calculated from age-specific mortality tables. Including adult mortality in the regression equation controls away the primary biological mechanism through which healthcare spending improves survival, inducing severe over-controlling bias (artificially compressing the estimated expenditure coefficient from $+0.1927$ down to $+0.1484$).
-
-Consequently, the preferred baseline specification retains strictly pre-determined exogenous confounders—$\log(\text{GDP per capita})$ (economic productivity), `Schooling` (human capital), and development status (`Developed`):
+The preferred baseline excludes Adult Mortality and controls for log GDP per capita, Schooling, and development status:
 
 $$
-\text{LifeExpectancy}_{it} = \beta_0 + \beta_1 \text{TotalExpenditure}_{it} + \beta_2 \log(\text{GDP}_{it}) + \beta_3 \text{Schooling}_{it} + \beta_4 \text{Developed}_i + u_{it}
+LE_{it}=\beta_0+\beta_1X_{it}+\beta_2\ln(GDPpc_{it})+\beta_3Schooling_{it}+\beta_4Developed_i+u_{it}.
 $$
 
-Under this baseline specification, the estimated coefficient on government health expenditure share is $\beta_1 = +0.1927$ ($p < 0.001$, $R^2 = 0.695$), establishing a positive cross-sectional association after adjusting for fundamental socioeconomic development.
+These controls account for observable socioeconomic differences. Their inclusion does not establish strict exogeneity or eliminate all potential confounding. All models in this section use conventional OLS without country or year effects.
 
----
+Adult Mortality is included in a supplementary model. It may be a mediator: healthcare spending could reduce adult mortality, contributing to longer life expectancy. Controlling for mortality could therefore remove part of the relationship of interest. However, contemporaneous mortality may also reflect health needs that influence expenditure. These regressions do not establish its causal role.
 
-### 5.2 Analyzing Marginal Effects & Non-Linear Functional Forms
+| Baseline specification | Expenditure coefficient | OLS SE | p-value | 95% confidence interval | R-squared |
+| --- | ---: | ---: | ---: | --- | ---: |
+| Without Adult Mortality | 0.192698 | 0.024319 | <0.001 | [0.145012, 0.240383] | 0.694986 |
+| With Adult Mortality | 0.148399 | 0.020276 | <0.001 | [0.108640, 0.188157] | 0.788888 |
 
-To analyze whether the marginal return to healthcare spending is constant or exhibits diminishing returns, the empirical strategy moves to examining non-linear functional forms. Four distinct non-linear specifications were estimated on the baseline sample (excluding `Adult Mortality` and conditioning on $\log(\text{GDP})$, `Schooling`, and `Developed`), the following was considered the most appropriate:
+The change in coefficients shows sensitivity to control selection; it does not demonstrate mediation or prove over-control bias. Better fit with mortality does not by itself justify conditioning on a potential mediator. Both models include Developed and use identical observations.
 
-1. **Piecewise Linear Specification**: Allowing the slope to change above the median threshold ($k = 8.76\%$):
-   - Slope below 8.76%: $b = +0.2707$ ($p < 0.001$, 95% CI: $[0.1573, 0.3842]$)
-   - Slope change above 8.76%: $c = -0.1127$ ($p = 0.137$, 95% CI: $[-0.2612, 0.0359]$)
-   - Slope above 8.76%: $b + c = +0.1581$ ($p < 0.001$, 95% CI: $[0.0921, 0.2241]$)
+The preferred baseline implies that a one-percentage-point higher healthcare expenditure share is associated with approximately 0.193 additional years of life expectancy, holding the listed controls constant. This is a positive conditional association in pooled country-year data, not a causal effect. It combines differences across countries and changes over time. Subsequent nonlinear models exclude Adult Mortality.
 
-None of the non-linear curvature terms in the overall sample reach statistical significance at conventional levels ($p > 0.10$). While the piecewise linear specification delivers the strongest in-sample fit (lowest AIC and BIC), the estimated attenuation in slope above the median ($-0.1127$) remains statistically indistinguishable from zero. As a result, cross-sectional non-linear modeling fails to confirm the presence of diminishing marginal returns.
+### 5.2 Overall Nonlinear Specifications
 
----
-
-### 5.3 Panel Identification with Two-Way Fixed Effects
-
-To eliminate potential bias arising from unobserved time-invariant country heterogeneity (such as geography, deep institutional quality, and long-term historical infrastructure) as well as global annual shocks, the empirical design incorporates a panel **Two-Way Fixed Effects (TWFE)** model:
+To examine whether slopes decrease at higher spending levels, four models retain X and add one nonlinear term. They use the same 2,702 observations and common controls:
 
 $$
-\text{LifeExpectancy}_{it} = \beta_1 \text{TotalExpenditure}_{it} + \beta_2 \log(\text{GDP}_{it}) + \beta_3 \text{Schooling}_{it} + \alpha_i + \lambda_t + u_{it}
+C_{it}=\gamma_1\ln(GDPpc_{it})+\gamma_2Schooling_{it}+\gamma_3Developed_i.
 $$
 
-Once permanent country attributes ($\alpha_i$) and common global year shocks ($\lambda_t$) are conditioned out, the estimated within-country coefficient collapses to $\beta_1 = -0.0323$ ($p = 0.224$, 95% CI: $[-0.0843, 0.0197]$). Within-country reallocations of the public budget toward healthcare produce no statistically observable gains in population longevity over time.
+Each model estimates its own coefficients.
 
----
+| Specification | Model |
+| --- | --- |
+| Quadratic | $LE_{it}=\beta_0+bX_{it}+cX_{it}^2+C_{it}+u_{it}$ |
+| Linear plus logarithm | $LE_{it}=\beta_0+bX_{it}+c\ln(X_{it})+C_{it}+u_{it}$ |
+| Linear plus reciprocal | $LE_{it}=\beta_0+bX_{it}+c/X_{it}+C_{it}+u_{it}$ |
+| Piecewise linear | $LE_{it}=\beta_0+bX_{it}+c\max(X_{it}-k,0)+C_{it}+u_{it}$ |
 
-### Summary of Model Progression
+The threshold is the full-sample expenditure median, k = 8.7600, representing 8.7600%. It is not selected by searching for the smallest p-value.
 
-| Model Progression                  | Specification & Functional Form                  | Expenditure Coef ($\beta_1$) | Non-Linear Term ($c$) | p-value ($c$) | $R^2$ | Econometric Diagnosis                                               |
-| ---------------------------------- | ------------------------------------------------ | :----------------------------: | :---------------------: | :-------------: | :-----: | ------------------------------------------------------------------- |
-| **Baseline with Mediator**   | Linear + log(GDP) + Schooling + Adult Mortality  |            +0.1484            |           —           |       —       |  0.789  | Over-controlling bias from endogenous mediator                      |
-| **Baseline Exogenous Model** | Linear + log(GDP) + Schooling + Developed        |       **+0.1927**       |           —           |       —       |  0.695  | Preferred baseline; positive cross-sectional association            |
-| **Quadratic Curvature**      | $bX + cX^2$ + Exogenous Controls               |            +0.1619            |         +0.0012         |      0.614      |  0.695  | Quadratic term statistically insignificant                          |
-| **Linear-Logarithmic**       | $bX + c\log(X)$ + Exogenous Controls           |            +0.1769            |         +0.1499         |      0.762      |  0.695  | Logarithmic term statistically insignificant                        |
-| **Linear-Reciprocal**        | $bX + c/X$ + Exogenous Controls                |            +0.1960            |         +0.2166         |      0.877      |  0.695  | Reciprocal term statistically insignificant                         |
-| **Piecewise Linear**         | $bX + c\max(X - 8.76, 0)$ + Exogenous Controls |            +0.2707            |   **−0.1127**   |      0.137      |  0.695  | Best in-sample fit, but slope change is statistically insignificant |
-| **Two-Way Fixed Effects**    | Country FE + Year FE + log(GDP) + Schooling      |       **−0.0323**       |           —           |       —       |  0.985  | Within-country effect is statistically indistinguishable from zero  |
+Each added-term p-value comes from a two-sided test of $H_0:c=0$ against $H_1:c\ne0$. Under the null the model reduces to a straight line. All reported p-values are unadjusted conventional OLS p-values.
+
+Positive diminishing marginal associations require positive slopes over the relevant range and evidence of a decline. The required curvature sign is c < 0 for the quadratic and reciprocal models, c > 0 for the logarithmic model, and c < 0 for a downward slope change in the piecewise model. None of the four added terms is significant at the 10% level.
+
+| Piecewise quantity | Estimate | p-value | 95% confidence interval |
+| --- | ---: | ---: | --- |
+| Slope below 8.76%: b | 0.270742 | <0.001 | [0.157317, 0.384166] |
+| Slope above 8.76%: b+c | 0.158080 | <0.001 | [0.092073, 0.224087] |
+| High minus low slope: c | -0.112662 | 0.137151 | [-0.261232, 0.035908] |
+
+Both segment slopes are significantly positive, but their difference is not significant. The point estimates suggest attenuation without sufficient evidence to confirm it. The threshold is not an estimated optimal budget share.
+
+Among the four overall nonlinear specifications, piecewise regression has the lowest AIC and BIC. This does not establish clear superiority over the linear baseline: its AIC is only slightly lower (16326.12 versus 16326.33), while its BIC is higher (16361.53 versus 16355.84). These statistics come from the same-sample comparison; the current scripts do not print them. The linear model remains the baseline. Piecewise regression is useful for interpreting local slopes and considering subsequent lag specifications, rather than as proof of diminishing returns.
+
+### 5.3 Within-Group Quadratic Specifications
+
+Different slopes across development groups indicate heterogeneity, not necessarily curvature. Separate quadratic models examine nonlinear relationships within relatively more similar groups.
+
+For developed countries, using only observations with $D_i=1$:
+
+$$
+LE_{it}=a_0+a_1X_{it}+a_2X_{it}^2+a_3\ln(GDPpc_{it})+a_4Schooling_{it}+u_{it}.
+$$
+
+For developing countries, using only observations with $D_i=0$:
+
+$$
+LE_{it}=d_0+d_1X_{it}+d_2X_{it}^2+d_3\ln(GDPpc_{it})+d_4Schooling_{it}+u_{it}.
+$$
+
+Developed is omitted because it is constant within each group: redundant with the intercept in the developed group and zero in the developing group. Neither model includes Adult Mortality. All coefficients are estimated separately by group.
+
+| Group | Linear-term estimate | Squared-term estimate | Squared-term p-value | R-squared | N | Countries |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Developed | -0.219782 | 0.013506 | 0.012855 | 0.740654 | 496 | 31 |
+| Developing | 0.151079 | 0.002536 | 0.338546 | 0.599440 | 2,206 | 140 |
+
+The p-values test whether the squared-term coefficient is zero within each group. The developed-country model shows significant positive curvature: the estimated slope increases with spending, contrary to diminishing returns. The developing-country squared term is not significant.
+
+Thus, within-group estimates do not consistently support diminishing returns. A significant coefficient in one group and an insignificant coefficient in the other do not establish a significant difference between groups. Both groups remain heterogeneous. R-squared values should not be used to rank models across these different samples.
+
+The main finding is a positive conditional linear association, without consistent evidence of diminishing marginal returns. These models do not establish causality or remove unobserved country differences and common time shocks. Conventional inference does not address within-country error dependence.
 
 ---
 
