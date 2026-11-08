@@ -14,7 +14,7 @@ This study develops an incremental empirical investigation across 181 nations fr
 
 ---
 
-## 2. Data Pre-Processing 
+## 2. Data Pre-Processing
 
 ### 2.1 Documenting the Primary Explanatory Variable
 
@@ -78,30 +78,58 @@ This establishes the central econometric warning of our investigation: national 
 
 ## 5. Progressive Econometric Modeling & Control Selection
 
-A foundational decision in our empirical design was deliberately excluding `Adult Mortality`. **Adult Mortality** is an endogenous mediator: population life expectancy is mathematically calculated from age-specific mortality tables. Controlling for adult mortality controls away the direct biological mechanism through which healthcare spending improves survival, inducing severe over-controlling bias. 
+### 5.1 Baseline Model Specification & Control Selection
 
-This is the model that we use to observe the relation between the life expectancy and total expenditure:
+The modeling sequence begins by establishing a contemporaneous baseline model across 2,702 country-year observations (171 countries) to assess the relationship between general government health expenditure share and national life expectancy.
+
+A foundational methodological decision in this empirical design is the deliberate exclusion of `Adult Mortality`. **Adult Mortality** represents an endogenous mediator rather than an exogenous confounder: population life expectancy is mathematically calculated from age-specific mortality tables. Including adult mortality in the regression equation controls away the primary biological mechanism through which healthcare spending improves survival, inducing severe over-controlling bias (artificially compressing the estimated expenditure coefficient from $+0.1927$ down to $+0.1484$).
+
+Consequently, the preferred baseline specification retains strictly pre-determined exogenous confounders—$\log(\text{GDP per capita})$ (economic productivity), `Schooling` (human capital), and development status (`Developed`):
 
 $$
-\text{LifeExpectancy}_{it} = \beta_0 + \beta_1 \text{TotalExpenditure}_{it} + \beta_2 \log(\text{GDP}_{it}) + \beta_3 \text{Schooling}_{it} + u_{it}
+\text{LifeExpectancy}_{it} = \beta_0 + \beta_1 \text{TotalExpenditure}_{it} + \beta_2 \log(\text{GDP}_{it}) + \beta_3 \text{Schooling}_{it} + \beta_4 \text{Developed}_i + u_{it}
 $$
 
-the coefficient collapses to $\beta_1 = -0.0514$ ($p = 0.352$). The initial positive association completely vanishes. When lagged spending ($X_{t-1}$) is examined with baseline controls, the cross-sectional association remains a modest $+0.1801$ ($p = 0.037$).
+Under this baseline specification, the estimated coefficient on government health expenditure share is $\beta_1 = +0.1927$ ($p < 0.001$, $R^2 = 0.695$), establishing a positive cross-sectional association after adjusting for fundamental socioeconomic development.
 
-Finally, in **Model 3**, country and year fixed effects are added (Two-Way Fixed Effects):
+---
+
+### 5.2 Analyzing Marginal Effects & Non-Linear Functional Forms
+
+To analyze whether the marginal return to healthcare spending is constant or exhibits diminishing returns, the empirical strategy moves to examining non-linear functional forms. Four distinct non-linear specifications were estimated on the baseline sample (excluding `Adult Mortality` and conditioning on $\log(\text{GDP})$, `Schooling`, and `Developed`), the following was considered the most appropriate:
+
+1. **Piecewise Linear Specification**: Allowing the slope to change above the median threshold ($k = 8.76\%$):
+   - Slope below 8.76%: $b = +0.2707$ ($p < 0.001$, 95% CI: $[0.1573, 0.3842]$)
+   - Slope change above 8.76%: $c = -0.1127$ ($p = 0.137$, 95% CI: $[-0.2612, 0.0359]$)
+   - Slope above 8.76%: $b + c = +0.1581$ ($p < 0.001$, 95% CI: $[0.0921, 0.2241]$)
+
+None of the non-linear curvature terms in the overall sample reach statistical significance at conventional levels ($p > 0.10$). While the piecewise linear specification delivers the strongest in-sample fit (lowest AIC and BIC), the estimated attenuation in slope above the median ($-0.1127$) remains statistically indistinguishable from zero. As a result, cross-sectional non-linear modeling fails to confirm the presence of diminishing marginal returns.
+
+---
+
+### 5.3 Panel Identification with Two-Way Fixed Effects
+
+To eliminate potential bias arising from unobserved time-invariant country heterogeneity (such as geography, deep institutional quality, and long-term historical infrastructure) as well as global annual shocks, the empirical design incorporates a panel **Two-Way Fixed Effects (TWFE)** model:
 
 $$
 \text{LifeExpectancy}_{it} = \beta_1 \text{TotalExpenditure}_{it} + \beta_2 \log(\text{GDP}_{it}) + \beta_3 \text{Schooling}_{it} + \alpha_i + \lambda_t + u_{it}
 $$
 
-Here, unobserved time-invariant national characteristics (geography, institutions, climate) and global annual shocks are swept out. The within-country coefficient is $\beta_1 = -0.0323$ ($p = 0.224$). Reallocating national budgets toward health produces no statistically observable gains in longevity.
+Once permanent country attributes ($\alpha_i$) and common global year shocks ($\lambda_t$) are conditioned out, the estimated within-country coefficient collapses to $\beta_1 = -0.0323$ ($p = 0.224$, 95% CI: $[-0.0843, 0.0197]$). Within-country reallocations of the public budget toward healthcare produce no statistically observable gains in population longevity over time.
 
-| Model Specification             | Independent Variables      | Health Exp. Coef ($\beta$) | Std. Error | p-value | $R^2$ | Econometric Interpretation                   |
-| ------------------------------- | -------------------------- | :--------------------------: | :--------: | :-----: | :-----: | -------------------------------------------- |
-| **Model 1: Naive Pooled** | Total expenditure only     |      **+0.8369**      |   0.0541   | < 0.001 |  0.148  | Spurious cross-sectional correlation         |
-| **Model 2: Controls**     | + log(GDPpc) and Schooling |      **−0.0514**      |   0.0552   |  0.352  |  0.695  | Effect collapses once wealth is controlled   |
-| **Model 2 (Lagged)**      | $X_{t-1}$ + Controls     |      **+0.1801**      |   0.0862   |  0.037  |  0.696  | Modest positive cross-sectional level        |
-| **Model 3: TWFE Panel**   | + Country FE + Year FE     |      **−0.0323**      |   0.0265   |  0.224  |  0.985  | Within-country variation is centered at zero |
+---
+
+### Summary of Model Progression
+
+| Model Progression                  | Specification & Functional Form                  | Expenditure Coef ($\beta_1$) | Non-Linear Term ($c$) | p-value ($c$) | $R^2$ | Econometric Diagnosis                                               |
+| ---------------------------------- | ------------------------------------------------ | :----------------------------: | :---------------------: | :-------------: | :-----: | ------------------------------------------------------------------- |
+| **Baseline with Mediator**   | Linear + log(GDP) + Schooling + Adult Mortality  |            +0.1484            |           —           |       —       |  0.789  | Over-controlling bias from endogenous mediator                      |
+| **Baseline Exogenous Model** | Linear + log(GDP) + Schooling + Developed        |       **+0.1927**       |           —           |       —       |  0.695  | Preferred baseline; positive cross-sectional association            |
+| **Quadratic Curvature**      | $bX + cX^2$ + Exogenous Controls               |            +0.1619            |         +0.0012         |      0.614      |  0.695  | Quadratic term statistically insignificant                          |
+| **Linear-Logarithmic**       | $bX + c\log(X)$ + Exogenous Controls           |            +0.1769            |         +0.1499         |      0.762      |  0.695  | Logarithmic term statistically insignificant                        |
+| **Linear-Reciprocal**        | $bX + c/X$ + Exogenous Controls                |            +0.1960            |         +0.2166         |      0.877      |  0.695  | Reciprocal term statistically insignificant                         |
+| **Piecewise Linear**         | $bX + c\max(X - 8.76, 0)$ + Exogenous Controls |            +0.2707            |   **−0.1127**   |      0.137      |  0.695  | Best in-sample fit, but slope change is statistically insignificant |
+| **Two-Way Fixed Effects**    | Country FE + Year FE + log(GDP) + Schooling      |       **−0.0323**       |           —           |       —       |  0.985  | Within-country effect is statistically indistinguishable from zero  |
 
 ---
 
@@ -150,10 +178,19 @@ Some possible explanations are:
 
 ---
 
-## 9. Concluding Remarks & Methodological Policy Lessons
+## 9. Conclusion
 
-The unified findings of this project provide three clear lessons for empirical econometrics and health policy:
+### 1. The Empirical Reality: A Non-Causal Link
 
-1. **Cross-Sectional Associations Are Non-Causal**: The naive positive slope between health budget share and longevity (+0.84) is entirely driven by omitted national wealth and education. Societies that spend higher budget shares on health already possess the modern infrastructure that sustains longer life.
-2. **Within-Country Invariance**: Over the 15-year panel window, annual reallocations of the government budget toward healthcare produced no statistically observable contemporaneous or delayed improvements in population longevity ($\beta_{\text{TWFE}} = -0.0323$, $p = 0.224$).
-3. **Budget Prioritization vs. Real Resource Allocation**: Setting policy targets based on arbitrary health budget shares (e.g., the Abuja Declaration's 15% target) confuses fiscal composition with actual resource availability. Policymakers must focus on total real spending per capita, procurement efficiency, and targeting cost-effective primary healthcare interventions.
+The naive cross-sectional association between government health expenditure share and life expectancy ($+0.84$ years per percentage point) is non-causal. Once national wealth ($\log \text{GDP}$) and education (`Schooling`) are controlled for, this positive effect completely collapses. When evaluating within-country changes over time via **Two-Way Fixed Effects (TWFE)**, the estimated impact falls to precisely zero ($\beta = -0.032$, $p = 0.224$). Our diagnostic tests confirm:
+
+* **Diminishing returns**: A piecewise threshold at median spending (8.76%) shows no significant flattening ($p = 0.76$).
+* **Delayed effect**: Dynamic lags (1-year and 3-year horizons) effects could not be observed.
+* **Reverse causality**: Acute health crises ($\Delta \text{LifeExp} \le -1.0$ year across 26 historical shock episodes) do not trigger compensatory spending spikes.
+
+### 2. Theoretical Mechanisms & Technology Spillovers
+
+Two structural mechanisms explain why within-country budgetary reallocations fail to move aggregate longevity:
+
+1. **Budget Share vs. Real Purchasing Power**: `Total expenditure` measures the political priority of health (% of the public budget), not real dollars per citizen. A 15% allocation in a poor country yields under \$20 per person, whereas an 8% share in a rich nation provides thousands. Real resources are dictated by GDP, which absorbs the cross-sectional explanatory power.
+2. **Cross-Country Medical Spillovers**: Advanced nations finance the fixed R&D costs of medical breakthroughs (vaccines, antivirals, antibiotics). These technologies diffuse globally at near-zero marginal cost through agencies like the WHO, Gavi, and the Global Fund. Consequently, developing nations achieve massive longevity gains without needing to increase their domestic health budget shares, obscuring cross-group slope comparisons.
