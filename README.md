@@ -72,5 +72,6 @@ I conducted the exploratory data analysis of the dataset. I analyzed the distrib
 Enzo Sakhinis:
 I extended the analysis to test whether the effect of government healthcare expenditure appears with a delay and whether the results are affected by reverse causality. I estimated a piecewise linear model with expenditure lagged by 0, 1 and 3 years on a common sample, with a fixed threshold at the median spending and country-clustered standard errors, and compared it with a linear specification using AIC and BIC. I also estimated fixed-effects models with country and year effects and log, lagged expenditure. To address reverse causality, I defined a health-shock indicator (a fall in life expectancy of at least one year), tested whether shocks lead to higher spending, ran an event study around the shocks, and re-estimated the effect of lagged expenditure with shock and HIV/AIDS controls, after dropping shock observations and shock countries, with and without fixed effects. I also created the visualizations for these results and presented this part of the project.
 
-# References
-Course materials
+# Bibliography
+
+This project was developed through discussions and reflections based on the content covered in the course lectures.
