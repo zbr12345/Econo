@@ -1,11 +1,5 @@
 # README
-<<<<<<< HEAD
 
-The group worked collaboratively throughout the project, despite having individual tasks. Everyone contributed to all stages, from choosing the project and making decisions about data processing to conducting the analyses and preparing the final presentation.
-
-### Contributions of each members:
-
-=======
 # Project Setup and Execution Guide
 
 ## 1. Install the environment
@@ -66,7 +60,8 @@ After preparing the data, run the following scripts from the project folder:
 Regression results appear in the terminal. Generated figures and saved analysis tables are placed under `output/`. Re-running a script updates its outputs.
 
 # Contributions of each members:
->>>>>>> b333250ef3ea6486e855520c1d2b07dbf831cdd3
+The group worked collaboratively throughout the project, despite having individual tasks. Everyone contributed to all stages, from choosing the project and making decisions about data processing to conducting the analyses and preparing the final presentation.
+
 ZHANG Bairong:I developed the data-processing pipeline to harmonize and merge life expectancy, GDP per capita, and government healthcare expenditure data, handle missing values, and correct development-status classifications. I implemented baseline OLS models with and without adult mortality, tested nonlinear relationships in the full sample and within development groups, and created visualizations to present and interpret the results.
 
 PINHEIRO PIERAZOLLI Enzo : Responsible for the analysis of spurious correlations, contributions to the interpretation and writing of the empirical report, and participation in data preprocessing. Identified and investigated Simpson's Paradox, examining how cross-country differences could distort the observed relationship between healthcare expenditure and life expectancy. Developed visualizations for the final presentation.
@@ -76,3 +71,7 @@ I conducted the exploratory data analysis of the dataset. I analyzed the distrib
 
 Enzo Sakhinis:
 I extended the analysis to test whether the effect of government healthcare expenditure appears with a delay and whether the results are affected by reverse causality. I estimated a piecewise linear model with expenditure lagged by 0, 1 and 3 years on a common sample, with a fixed threshold at the median spending and country-clustered standard errors, and compared it with a linear specification using AIC and BIC. I also estimated fixed-effects models with country and year effects and log, lagged expenditure. To address reverse causality, I defined a health-shock indicator (a fall in life expectancy of at least one year), tested whether shocks lead to higher spending, ran an event study around the shocks, and re-estimated the effect of lagged expenditure with shock and HIV/AIDS controls, after dropping shock observations and shock countries, with and without fixed effects. I also created the visualizations for these results and presented this part of the project.
+
+# Bibliography
+
+This project was developed through discussions and reflections based on the content covered in the course lectures.
