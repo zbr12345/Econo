@@ -1,11 +1,10 @@
 # README
-<<<<<<< HEAD
 
 The group worked collaboratively throughout the project, despite having individual tasks. Everyone contributed to all stages, from choosing the project and making decisions about data processing to conducting the analyses and preparing the final presentation.
 
 ### Contributions of each members:
 
-=======
+
 # Project Setup and Execution Guide
 
 ## 1. Install the environment
@@ -66,7 +65,7 @@ After preparing the data, run the following scripts from the project folder:
 Regression results appear in the terminal. Generated figures and saved analysis tables are placed under `output/`. Re-running a script updates its outputs.
 
 # Contributions of each members:
->>>>>>> b333250ef3ea6486e855520c1d2b07dbf831cdd3
+
 ZHANG Bairong:I developed the data-processing pipeline to harmonize and merge life expectancy, GDP per capita, and government healthcare expenditure data, handle missing values, and correct development-status classifications. I implemented baseline OLS models with and without adult mortality, tested nonlinear relationships in the full sample and within development groups, and created visualizations to present and interpret the results.
 
 PINHEIRO PIERAZOLLI Enzo : Responsible for the analysis of spurious correlations, contributions to the interpretation and writing of the empirical report, and participation in data preprocessing. Identified and investigated Simpson's Paradox, examining how cross-country differences could distort the observed relationship between healthcare expenditure and life expectancy. Developed visualizations for the final presentation.
